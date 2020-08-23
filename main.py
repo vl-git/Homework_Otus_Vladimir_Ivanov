@@ -1,4 +1,25 @@
 from operator import pow
+from time import time
+from functools import wraps, reduce
+
+
+def time_func(func, *args, **kwargs):
+    print("timing func", func, "with args", args, kwargs)
+    start_time = time()
+    res = func(*args, **kwargs)
+    end_time = time()
+    print("computed in", end_time - start_time)
+    return res
+
+
+def timing_dec(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        return time_func(func, *args, **kwargs)
+    return wrapper
+
+
+@timing_dec
 def powering_sequence(*args, power=2):
     print(f'Powering {args} by {power}')
     powered_sequence = list(map(pow, args, [power]*len(args)))
@@ -6,8 +27,7 @@ def powering_sequence(*args, power=2):
     return powered_sequence
 
 
-powering_sequence(1,2,3,4,22, 125.6, power=4)
-print()
+@timing_dec
 def prime_check(n):
     if not isinstance(n, int):
         return False
@@ -19,6 +39,8 @@ def prime_check(n):
     return d ** 2 > n
 
 
+
+@timing_dec
 def filter_sequence(seq, ODD_ONLY=False, EVEN_ONLY=False, PRIMES_ONLY=False):
     if isinstance(seq, list):
         if ODD_ONLY:
@@ -44,6 +66,8 @@ def filter_sequence(seq, ODD_ONLY=False, EVEN_ONLY=False, PRIMES_ONLY=False):
         return None
 
 
+powering_sequence(1,2,3,4,22, 125.6, power=4)
+print()
 test_seq1 = [1, 2, 3, 4, 5, 7, 9, 10, 17, 225, 15.6]
 test_seq2 = (1, 2, 3, 4, 5, 7, 9, 10, 17, 225, 15.6)
 filter_sequence(test_seq2, ODD_ONLY=True)
