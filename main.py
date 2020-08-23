@@ -66,6 +66,19 @@ def filter_sequence(seq, ODD_ONLY=False, EVEN_ONLY=False, PRIMES_ONLY=False):
         return None
 
 
+def fib_numbers(q, prev=1, curr=1, flag=True):
+    if flag:
+        print(f'First {q} Fibonacci numbers:')
+    print(prev, end=' ')
+    curr += prev
+    prev = curr - prev
+    q -= 1
+    if q == 0:
+        return None
+    fib_numbers(q, prev=prev, curr=curr, flag=False)
+
+
+
 powering_sequence(1,2,3,4,22, 125.6, power=4)
 print()
 test_seq1 = [1, 2, 3, 4, 5, 7, 9, 10, 17, 225, 15.6]
@@ -75,3 +88,5 @@ print()
 filter_sequence(test_seq1)
 print()
 filter_sequence(test_seq1, PRIMES_ONLY=True)
+print()
+fib_numbers(20)
