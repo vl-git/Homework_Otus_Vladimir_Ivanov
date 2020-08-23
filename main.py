@@ -1,14 +1,15 @@
 from operator import pow
 from time import time
-from functools import wraps, reduce
+from functools import wraps
+from random import randint
 
 
 def time_func(func, *args, **kwargs):
-    print("timing func", func, "with args", args, kwargs)
-    start_time = time()
+    print("timing func", func.__name__, "with args", (str(args)[:-2] + ')') if args else '', kwargs if kwargs else '')
+    start_time = float('%.20f'%time())
     res = func(*args, **kwargs)
-    end_time = time()
-    print("computed in", end_time - start_time)
+    end_time = float('%.20f'%time())
+    print("computed in", '%.20f'%(end_time - start_time))
     return res
 
 
@@ -16,13 +17,14 @@ def timing_dec(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         return time_func(func, *args, **kwargs)
+
     return wrapper
 
 
 @timing_dec
 def powering_sequence(*args, power=2):
     print(f'Powering {args} by {power}')
-    powered_sequence = list(map(pow, args, [power]*len(args)))
+    powered_sequence = list(map(pow, args, [power] * len(args)))
     print(f'Got result: {powered_sequence}')
     return powered_sequence
 
@@ -37,7 +39,6 @@ def prime_check(n):
     while d ** 2 <= n and n % d != 0:
         d += 2
     return d ** 2 > n
-
 
 
 @timing_dec
@@ -66,6 +67,16 @@ def filter_sequence(seq, ODD_ONLY=False, EVEN_ONLY=False, PRIMES_ONLY=False):
         return None
 
 
+def trace(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        print(func.__name__, (str(args)[:-2] + ')') if args else '', kwargs if kwargs else '')
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
+@trace
 def fib_numbers(q, prev=1, curr=1, flag=True):
     if flag:
         print(f'First {q} Fibonacci numbers:')
@@ -78,10 +89,9 @@ def fib_numbers(q, prev=1, curr=1, flag=True):
     fib_numbers(q, prev=prev, curr=curr, flag=False)
 
 
-
-powering_sequence(1,2,3,4,22, 125.6, power=4)
+powering_sequence(1, 2, 3, 4, 22, 125.6, power=4)
 print()
-test_seq1 = [1, 2, 3, 4, 5, 7, 9, 10, 17, 225, 15.6]
+test_seq1 = [randint(0, 1000) for i in range(0,25)]
 test_seq2 = (1, 2, 3, 4, 5, 7, 9, 10, 17, 225, 15.6)
 filter_sequence(test_seq2, ODD_ONLY=True)
 print()
