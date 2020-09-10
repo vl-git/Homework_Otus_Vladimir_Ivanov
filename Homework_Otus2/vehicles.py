@@ -1,5 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
+import errors
+
 
 class BaseVehicleABC(metaclass=ABCMeta):
     @abstractmethod
@@ -74,6 +76,18 @@ class BaseVehicle(BaseVehicleABC):
             print(f'{self.name} was successfully repaired')
 
 
+@dataclass
+class Engine():
+    engine_speed: int
+    capacity: int
+    started = False
+
+
+@dataclass
+class MusicSystem():
+    song: str
+
+
 class Car(BaseVehicle):
     _SOUND = 'BEEP'
     _CONSUMPTION = 10
@@ -83,16 +97,53 @@ class Car(BaseVehicle):
     _WEIGHT = 1000
     _WHEELS = 4
     _DOORS = 5
+    engine = Engine(6000, 2)
+    music_system = MusicSystem('ABBA - \"Waterloo\"')
 
     def __init__(self, name, color):
         super().__init__(name, color)
         self._amortization = self._max_amortization
         self._fuel = self._MAX_FUEL
 
+    def play_music(self):
+        print(f'playing: {self.music_system.song}')
+
+    def start_engine(self):
+        if not self._broken:
+            self.engine.started = True
+            print('Ready to drive')
+        else:
+            print('Repair your car!')
+
+    def stop_engine(self):
+        if not self.engine.started:
+            print('The engine already stopped')
+        else:
+            self.engine.started = False
+
+    def drive(self, distance):
+        if self.engine.started:
+            fuel_to_go = distance * self._CONSUMPTION
+            if fuel_to_go <= self._fuel:
+                self._fuel -= fuel_to_go
+                if self._amortization > 0:
+                    self._amortization -= 1
+                elif self._amortization == 0:
+                    self._broken = True
+                    raise Exception(f'{self.name} needs to be repaired')
+                print(f'Going {distance} ahead. Time to drive: {distance / self._speed}\n'
+                      f'Fuel spent: {fuel_to_go}.\nFuel left: {self._fuel}\n'
+                      f'Drives to next repair: {self._amortization}')
+            else:
+                print(f'Not enough fuel! You have to add {fuel_to_go - self._fuel}')
+        else:
+            raise errors.StartError
+
     def __str__(self):
         return f'{self.name}:\n' \
                f'Characteristics: doors: {self._DOORS}, color = {self.color},' \
-               f' {self._WHEELS} wheels, weight = {self._WEIGHT}\n' \ 
+               f' {self._WHEELS} wheels, weight = {self._WEIGHT}\n' \
+               f'Engine characteristics: {self.engine}\n' \
                f'Max fuel in tank: {self._MAX_FUEL}\n' \
                f'Fuel left: {self._fuel}\n' \
                f'Drives to repair: {self._amortization}'
@@ -101,7 +152,8 @@ class Car(BaseVehicle):
 if __name__ == '__main__':
     car = Car('Ford', 'Cyan')
     print(car)
+    car.start_engine()
     car.drive(15)
     car.add_fuel(100)
     car.repair(only_full_repair=False)
-
+    car.play_music()
