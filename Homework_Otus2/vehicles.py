@@ -79,7 +79,7 @@ class BaseVehicle(BaseVehicleABC):
 @dataclass
 class Engine():
     engine_speed: int
-    capacity: int
+    capacity: (int, float)
     started = False
 
 
@@ -149,11 +149,55 @@ class Car(BaseVehicle):
                f'Drives to repair: {self._amortization}'
 
 
+class Sportcar(Car):
+    _SOUND = 'Beep-beep'
+    _CONSUMPTION = 15
+    _MAX_FUEL = 150
+    _max_amortization = 15
+    _speed = 20
+    _WEIGHT = 1250
+    _WHEELS = 4
+    _DOORS = 3
+    engine = Engine(10000, 2.5)
+    music_system = MusicSystem('Survivor - \"Eye of the tiger\"')
+    _UPGRADED = False
+
+    def __init__(self, name, color):
+        super().__init__(name, color)
+
+    def pit_stop(self):
+        self.repair(only_full_repair=False)
+        self.add_fuel(self._MAX_FUEL)
+
+    def upgrade(self):
+        if not self._UPGRADED:
+            self._MAX_FUEL = 200
+            self._CONSUMPTION = 20
+            self._max_amortization = 20
+            self._speed = 25
+            self._UPGRADED = True
+            print(f'{self.name} was successfully upgraded')
+        else:
+            print(f'{self.name} characteristics already upgraded')
+
+
+class Boat(BaseVehicle):
+
 if __name__ == '__main__':
-    car = Car('Ford', 'Cyan')
+    '''car = Car('Ford', 'Cyan')
     print(car)
     car.start_engine()
     car.drive(15)
     car.add_fuel(100)
     car.repair(only_full_repair=False)
-    car.play_music()
+    car.play_music()'''
+
+    sportcar = Sportcar('Porsche', 'Red')
+    print(sportcar)
+    sportcar.start_engine()
+    sportcar.drive(5)
+    sportcar.upgrade()
+    sportcar.pit_stop()
+    sportcar.drive(10)
+    sportcar.play_music()
+    sportcar.stop_engine()
