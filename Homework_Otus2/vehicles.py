@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
 import errors
+from random import choice
 
 
 class BaseVehicleABC(metaclass=ABCMeta):
@@ -77,14 +78,14 @@ class BaseVehicle(BaseVehicleABC):
 
 
 @dataclass
-class Engine():
+class Engine:
     engine_speed: int
     capacity: (int, float)
     started = False
 
 
 @dataclass
-class MusicSystem():
+class MusicSystem:
     song: str
 
 
@@ -182,6 +183,42 @@ class Sportcar(Car):
 
 
 class Boat(BaseVehicle):
+    _COMPASS = ['North', 'South', 'West', 'East', 'Southwest', 'Northwest', 'Southeast', 'Northeast']
+    _SOUND = 'WEE-WEE'
+    _speed = 5
+    _WEIGHT = 1000
+    _started = False
+    _SAIL = 1
+
+    def __init__(self, name, color):
+        super().__init__(name, color)
+
+    def get_wind(self):
+        wind = choice(self._COMPASS)
+        return wind
+
+    def drive(self, distance):
+        raise errors.VehicleTypeError
+
+    def set_sail(self):
+        if self._started:
+            print('Already set, ready for sail')
+        else:
+            self._started = True
+            print('Ready for sail!')
+
+    def sail(self, distance):
+        if self._started:
+            wind = self.get_wind()
+            print(f'Sailing in the {wind} wind for {distance}. Arriving in {distance/self._speed}')
+        else:
+            raise errors.BoatStartError
+
+    def __str__(self):
+        return f'Boat \"{self.name}\":\n' \
+               f'Characteristics: sail: {self._SAIL}, speed: {self._speed}, weight: {self._WEIGHT}' \
+               f'color: {self.color}'
+
 
 if __name__ == '__main__':
     '''car = Car('Ford', 'Cyan')
@@ -190,7 +227,7 @@ if __name__ == '__main__':
     car.drive(15)
     car.add_fuel(100)
     car.repair(only_full_repair=False)
-    car.play_music()'''
+    car.play_music()
 
     sportcar = Sportcar('Porsche', 'Red')
     print(sportcar)
@@ -200,4 +237,10 @@ if __name__ == '__main__':
     sportcar.pit_stop()
     sportcar.drive(10)
     sportcar.play_music()
-    sportcar.stop_engine()
+    sportcar.stop_engine()'''
+
+    boat = Boat('Ann-Marie', 'White')
+    boat.set_sail()
+    boat.sail(50)
+
+
