@@ -265,38 +265,3 @@ class SteamBoat(Boat, Car):
                f'Fuel left: {self._fuel}\n' \
                f'Drives to repair: {self._amortization}'
 
-
-if __name__ == '__main__':
-    '''car = Car('Ford', 'Cyan')
-    print(car)
-    car.start_engine()
-    car.drive(15)
-    car.add_fuel(100)
-    car.repair(only_full_repair=False)
-    car.play_music()
-
-    sportcar = Sportcar('Porsche', 'Red')
-    print(sportcar)
-    sportcar.start_engine()
-    sportcar.drive(5)
-    sportcar.upgrade()
-    sportcar.pit_stop()
-    sportcar.drive(10)
-    sportcar.play_music()
-    sportcar.stop_engine()'''
-
-    '''boat = Boat('Ann-Marie', 'White')
-    boat.set_sail()
-    boat.sail(50)
-    boat.make_sound()'''
-
-    steamboat = SteamBoat('Supreme', 'Black')
-    print(steamboat)
-    print()
-    steamboat.set_sail()
-    steamboat.sail(15)
-    print()
-    steamboat.start_engine()
-    steamboat.drive(50)
-    steamboat.add_fuel(200)
-    steamboat.play_music()
