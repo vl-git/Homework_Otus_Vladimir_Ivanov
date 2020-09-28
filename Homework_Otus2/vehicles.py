@@ -210,7 +210,7 @@ class Boat(BaseVehicle):
     def sail(self, distance):
         if self._started:
             wind = self.get_wind()
-            print(f'Sailing in the {wind} wind for {distance}. Arriving in {distance/self._speed}')
+            print(f'Sailing in the {wind} wind for {distance}. Arriving in {distance / self._speed}')
         else:
             raise errors.BoatStartError
 
@@ -218,6 +218,52 @@ class Boat(BaseVehicle):
         return f'Boat \"{self.name}\":\n' \
                f'Characteristics: sail: {self._SAIL}, speed: {self._speed}, weight: {self._WEIGHT}' \
                f'color: {self.color}'
+
+
+class SteamBoat(Boat, Car):
+    _SOUND = 'WOO-WOO'
+    _speed = 10
+    _speed_engine = 20
+    _WEIGHT = 2000
+    _started = False
+    _SAIL = 3
+    _started_engine = False
+    _engine = Engine(1000, 3)
+    _MAX_FUEL = 500
+    _CONSUMPTION = 10
+    _WHEELS = 0
+    _DOORS = 0
+
+    def __init__(self, name, color):
+        super().__init__(name, color)
+
+    def drive(self, distance):
+        if self.engine.started:
+            fuel_to_go = distance * self._CONSUMPTION
+            if fuel_to_go <= self._fuel:
+                self._fuel -= fuel_to_go
+                if self._amortization > 0:
+                    self._amortization -= 1
+                elif self._amortization == 0:
+                    self._broken = True
+                    raise Exception(f'{self.name} needs to be repaired')
+                print(f'Going {distance} ahead. Time to drive: {distance / self._speed}\n'
+                      f'Fuel spent: {fuel_to_go}.\nFuel left: {self._fuel}\n'
+                      f'Drives to next repair: {self._amortization}')
+            else:
+                print(f'Not enough fuel! You have to add {fuel_to_go - self._fuel}')
+        else:
+            raise errors.StartError
+
+    def __str__(self):
+        return f'Steamboat \"{self.name}\":\n' \
+               f'Characteristics: sail: {self._SAIL}, speed on sail: {self._speed}, weight: {self._WEIGHT}\n' \
+               f'color: {self.color}\n' \
+               f'Engine characteristics: {self.engine}\n' \
+               f'Speed on engine: {self._speed_engine}\n' \
+               f'Max fuel in tank: {self._MAX_FUEL}\n' \
+               f'Fuel left: {self._fuel}\n' \
+               f'Drives to repair: {self._amortization}'
 
 
 if __name__ == '__main__':
@@ -239,8 +285,18 @@ if __name__ == '__main__':
     sportcar.play_music()
     sportcar.stop_engine()'''
 
-    boat = Boat('Ann-Marie', 'White')
+    '''boat = Boat('Ann-Marie', 'White')
     boat.set_sail()
     boat.sail(50)
+    boat.make_sound()'''
 
-
+    steamboat = SteamBoat('Supreme', 'Black')
+    print(steamboat)
+    print()
+    steamboat.set_sail()
+    steamboat.sail(15)
+    print()
+    steamboat.start_engine()
+    steamboat.drive(50)
+    steamboat.add_fuel(200)
+    steamboat.play_music()
